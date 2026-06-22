@@ -46,7 +46,9 @@ export class Scorer {
       if (a.final !== b.final) {
         return b.final - a.final;
       }
-      return a.query.localeCompare(b.query);
+      if (a.query < b.query) return -1;
+      if (a.query > b.query) return 1;
+      return 0;
     });
 
     return items;

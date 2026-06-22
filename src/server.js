@@ -28,7 +28,7 @@ async function main() {
   let loaded = 0;
 
   try {
-    await st.loadAll(async (qc) => {
+    await st.loadAll((qc) => {
       t.insert(qc.query, qc.count);
       loaded++;
     });

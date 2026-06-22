@@ -8,7 +8,7 @@
 #   3. write reduction through batching
 #
 # Prerequisites:
-#   - server running on :8080  (go run ./cmd/server)
+#   - server running on :8080  (node src/server.js or docker compose up server)
 #   - `hey` installed          (brew install hey)
 #   - jq installed for pretty output (brew install jq) — optional
 #

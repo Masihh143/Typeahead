@@ -47,16 +47,32 @@ export class Store {
   async loadAll(fn) {
     const client = await this.pool.connect();
     try {
-      const result = await client.query('SELECT query, count FROM queries');
-      for (const row of result.rows) {
-        // pg returns bigint as string to prevent precision loss, so parse it
-        const count = parseInt(row.count, 10);
-        await fn({ query: row.query, count });
+      await client.query('BEGIN');
+      await client.query('DECLARE mycursor CURSOR FOR SELECT query, count FROM queries');
+      
+      while (true) {
+        const res = await client.query('FETCH 50000 FROM mycursor');
+        if (res.rows.length === 0) {
+          break;
+        }
+        for (const row of res.rows) {
+          const count = parseInt(row.count, 10);
+          fn({ query: row.query, count });
+        }
       }
+      await client.query('COMMIT');
+    } catch (err) {
+      try {
+        await client.query('ROLLBACK');
+      } catch (rollbackErr) {
+        // Ignore rollback error if connection lost
+      }
+      throw err;
     } finally {
       client.release();
     }
   }
+
 
   close() {
     return this.pool.end();

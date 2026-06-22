@@ -34,6 +34,7 @@ services:
       target: server
     environment:
       DATABASE_URL: "postgres://typeahead:typeahead@postgres:5432/typeahead?sslmode=disable"
+      NODE_OPTIONS: "--max-old-space-size=4096"
     ports:
       - "8080:8080"
     depends_on:
